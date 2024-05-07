@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Sudoku Solver</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    canvas {
+      border: 1px solid black;
+    }
+  </style>
+</head>
+<body>
+  <h1>Sudoku Solver</h1>
+  <input type="file" id="fileInput" accept="image/*">
+  <br><br>
+  <canvas id="canvas" width="500" height="500"></canvas>
+  <br><br>
+  <input type="range" id="rotateSlider" min="-180" max="180" value="0" step="1">
+  <button id="solveBtn">Solve</button>
+  <br><br>
+  <div id="result"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
