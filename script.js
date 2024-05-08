@@ -79,7 +79,8 @@ document.getElementById('solveBtn').addEventListener('click', function () {
   // });
   $.ajax({
     type: 'POST',
-    url: 'http://localhost:5000/solve',
+    url: 'http://localhost:5000/solve', 
+    // url: 'http://127.0.0.1:5000/solve',
     data: { image: dataURL },
     success: function (response) {
       document.getElementById('result').innerHTML = response;
