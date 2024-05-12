@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>Sudoku Solver</title>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -9,27 +10,42 @@
     }
   </style>
 </head>
+
 <body>
   <h1>Sudoku Solver</h1>
   <input type="file" id="fileInput" accept="image/*">
   <br><br>
-  <canvas id="canvas" width="550" height="500"></canvas>
-  <br><br>
-  <label for="rotateSlider">Rotate:</label>
-  <input type="range" width="450" id="rotateSlider" min="-180" max="180" value="0" step="0.25">
-  <input type="text" id="rotateValue" value="0" style="width: 50px;">
-  <button id="scanBtn">Scan</button>
-  <br><br>
-  <img id="img" src="" style="display: none;">
-  <canvas id="transformedImgCanvas" width="256" height="256"></canvas>
-  <br><br>
-  <button id="flipXBtn">Flip: X</button>
-  <button id="flipYBtn">Flip: Y</button>
-  <button id="rotateBtn">Rotate: 90</button>
-  <button id="solveBtn">Solve</button>
+  <div style="display: flex; gap: 30px;">
+    <div>
+      <canvas id="canvas" width="550" height="500"></canvas>
+      <br><br>
+      <label for="rotateSlider">Rotate:</label>
+      <input type="range" style="width: 380px" id="rotateSlider" min="-180" max="180" value="0" step="0.25">
+      <input type="text" id="rotateValue" value="0" style="width: 50px;">
+      <button id="scanBtn">Scan</button>
+    </div>
+
+
+    <br><br>
+    <div>
+      <img id="img" src="" style="display: none;">
+      <canvas id="transformedImgCanvas" width="500" height="500"></canvas>
+      <br><br>
+      <button id="flipXBtn">Flip: X</button>
+      <button id="flipYBtn">Flip: Y</button>
+      <button id="rotateBtn">Rotate: 90</button>
+      <button id="solveBtn">Solve</button>
+    </div>
+
+  </div>
+
   <br><br>
   <div id="result"></div>
+  <H1>Solution:</H1>
+  <table id="grid" style="width: 200px; height: 200px; border: 2px solid; "></table>
+  <br><br>
 
   <script src="script.js"></script>
 </body>
+
 </html>
