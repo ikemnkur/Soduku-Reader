@@ -283,7 +283,7 @@ class UI(bge.types.KX_PythonComponent):
         # Create the new layout for object info
         self.info_layout = BoxLayout(
             relative={'pos': True, 'size': True},
-            pos=[0.25, -0.15],
+            pos=[0.275, -0.2],
             size=[0.6, 1],
             bg_color=[0, 0, 0, 0],
             orientation='vertical'
@@ -314,7 +314,7 @@ class UI(bge.types.KX_PythonComponent):
             property_label = LabelButton(
                 relative={'size': True, 'pos': True},
                 pos=[0, 0],
-                size=[.2, 1],
+                size=[.25, 1],
                 bg_color=[0, 0, 0, 0],
                 border_width=1,
                 border_color=[1, 1, 1, 1],
@@ -340,7 +340,7 @@ class UI(bge.types.KX_PythonComponent):
                 def on_press(self, widget):
                     self.text_input.edit = True
 
-            property_value = ModProps(size=(0.7, 1), relative={'size': True})
+            property_value = ModProps(size=(0.65, 1), relative={'size': True})
 
             change_button = LabelButton(
                 relative={'size': True, 'pos': True},
@@ -397,7 +397,7 @@ class UI(bge.types.KX_PythonComponent):
                 # 'velocity': list(obj.getLinearVelocity()),
                 'velocity': [round(val, 2) for val in obj.getLinearVelocity()],
             })
-            print("lol")
+            print('lol')
 
         return obj_info
 
