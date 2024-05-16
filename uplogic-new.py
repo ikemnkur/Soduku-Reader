@@ -4,6 +4,7 @@ from uplogic.ui import Canvas
 from uplogic.ui import RelativeLayout
 from uplogic.ui import BoxLayout
 from uplogic.ui import LabelButton
+from uplogic.ui import Button
 from uplogic.ui import Cursor
 from uplogic.ui import Image
 from uplogic.ui import TextInput
@@ -12,6 +13,38 @@ from uplogic.input import key_press
 from uplogic.decorators import game_props
 from uplogic.utils import world_to_screen
 from mathutils import Vector
+
+
+class SearchButton(Button):
+    
+    def start(self):
+        self.bg_color = (0, 0, 0, .5)
+        self.text_input = TextInput(
+            text='Search',
+            valign='center',
+            pos=(.05, .5),
+            relative={'pos': True}
+        )
+        self.add_widget(self.text_input)
+    
+    def on_press(self, widget):
+        self.text_input.edit = True
+
+class ModifyProperty(Button):
+    
+    def start(self):
+        self.bg_color = (0, 0, 0, .5)
+        self.text_input = TextInput(
+            text='Value',
+            valign='center',
+            halign='center',
+            pos=(.05, .5),
+            relative={'pos': True}
+        )
+        self.add_widget(self.text_input)
+    
+    def on_press(self, widget):
+        self.text_input.edit = True
 
 @game_props('show_menu')
 class UI(bge.types.KX_PythonComponent):
@@ -141,15 +174,7 @@ class UI(bge.types.KX_PythonComponent):
         )
         
         # Info text input
-        self.info_text = TextInput(
-            relative={'pos': False},
-            pos=[.5, .1],
-            font_color=[1, 1, 1, 1],
-            font_size=20,
-            shadow = True,
-            shadow_color=[0, 0.1, 0.1, 1],
-            text='Search'
-        )
+        self.info_text = SearchButton(size=(1, .5), relative={'size': True})
         
         # Main text input for displaying object info
         self.main_text = TextInput(
@@ -258,8 +283,8 @@ class UI(bge.types.KX_PythonComponent):
         # Create the new layout for object info
         self.info_layout = BoxLayout(
             relative={'pos': True, 'size': True},
-            pos=[0.1, 0.1],
-            size=[0.8, 0.8],
+            pos=[0.25, -0.15],
+            size=[0.6, 1],
             bg_color=[0, 0, 0, 0],
             orientation='vertical'
         )
@@ -268,11 +293,11 @@ class UI(bge.types.KX_PythonComponent):
         back_button = LabelButton(
             relative={'size': True, 'pos': True},
             pos=[0.9, 0.9],
-            size=[0.1, 0.1],
+            size=[0.1, 0.05],
             bg_color=[1, 0, 0, 1],
             border_width=1,
             border_color=[1, 1, 1, 1],
-            text='<-'
+            text='BACK'
         )
         back_button.on_click = self.show_object_names_layout
 
@@ -280,7 +305,7 @@ class UI(bge.types.KX_PythonComponent):
         for key, value in obj_info.items():
             property_layout = BoxLayout(
                 relative={'pos': True, 'size': True},
-                pos=[0.9, 0.9],
+                pos=[0, 0],
                 size=[1, .05],
                 bg_color=[0, 0, 0, 0],
                 orientation='horizontal'
@@ -288,17 +313,38 @@ class UI(bge.types.KX_PythonComponent):
 
             property_label = LabelButton(
                 relative={'size': True, 'pos': True},
-                pos=[0.2, 0],
-                size=[0.9, 1],
+                pos=[0, 0],
+                size=[.2, 1],
                 bg_color=[0, 0, 0, 0],
                 border_width=1,
                 border_color=[1, 1, 1, 1],
-                text=f"{key}: {value}"
+                text=f"{key}:"
             )
+
+            class ModProps(Button):
+    
+                def start(self):
+                    self.bg_color = (0, 0, 0, .5)
+                    self.text_input = TextInput(
+                        text=f'{value}',
+                        valign='center',
+                        halign='center',
+                        pos=(0.5, 0.5),
+                        # bg_color=[0, 0, 0, 0],
+                        # border_width=1,
+                        # border_color=[1, 1, 1, 1],
+                        relative={'pos': True}
+                    )
+                    self.add_widget(self.text_input)
+                
+                def on_press(self, widget):
+                    self.text_input.edit = True
+
+            property_value = ModProps(size=(0.7, 1), relative={'size': True})
 
             change_button = LabelButton(
                 relative={'size': True, 'pos': True},
-                pos=[1, 0],
+                pos=[.8, 0],
                 size=[.1, 1],
                 bg_color=[0, 0, 0, 0],
                 border_width=1,
@@ -308,6 +354,7 @@ class UI(bge.types.KX_PythonComponent):
             change_button.on_click = lambda *a, key=key: self.change_property(obj, key)
 
             property_layout.add_widget(property_label)
+            property_layout.add_widget(property_value)
             property_layout.add_widget(change_button)
 
             self.info_layout.add_widget(property_layout)
@@ -328,11 +375,16 @@ class UI(bge.types.KX_PythonComponent):
         """Retrieve information about the selected object"""
         obj_info = {
             'name': obj.name,
-            'global_position': list(obj.worldPosition),
-            'local_position': list(obj.localPosition),
-            'global_orientation': list(obj.worldOrientation.to_euler()),
-            'local_orientation': list(obj.localOrientation.to_euler()),
-            'scale': list(obj.localScale),
+            # 'global_position': list(obj.worldPosition),
+            'global_position': [round(val, 2) for val in obj.worldPosition],
+            # 'local_position': list(obj.localPosition),
+            'local_position': [round(val, 2) for val in obj.localPosition],
+            # 'global_orientation': list(obj.worldOrientation.to_euler()),
+            'global_orientation': [round(val, 2) for val in obj.worldOrientation.to_euler()],
+            # 'local_orientation': list(obj.localOrientation.to_euler()),
+            'local_orientation': [round(val, 2) for val in obj.localOrientation.to_euler()],
+            # 'scale': list(obj.localScale),
+            'scale': [round(val, 2) for val in obj.localScale],
             'color': list(obj.color),
             'properties': {prop_name: obj[prop_name] for prop_name in obj.getPropertyNames()},
             'materials': [mat.name for mat in obj.meshes[0].materials] if obj.meshes else [],
@@ -342,8 +394,10 @@ class UI(bge.types.KX_PythonComponent):
         if obj.getPhysicsId():
             obj_info.update({
                 'mass': obj.mass,
-                'velocity': list(obj.getLinearVelocity()),
+                # 'velocity': list(obj.getLinearVelocity()),
+                'velocity': [round(val, 2) for val in obj.getLinearVelocity()],
             })
+            print("lol")
 
         return obj_info
 
@@ -382,16 +436,22 @@ class UI(bge.types.KX_PythonComponent):
         
         suzanne.applyRotation((0, 0, -.01))
         suzanne.applyMovement((.1, 0, 0), True)
+        
+#        self.display_object_info(self.current_object)
+        
 
         # Update displayed object info periodically
         if hasattr(self, 'update_counter'):
             self.update_counter -= 1
+            print(self.update_counter)
             if self.update_counter <= 0:
                 self.update_counter = 12  # Update 5 times a second (60 FPS / 5 = 12)
                 if hasattr(self, 'current_object'):
                     self.display_object_info(self.current_object)
+                    print("updated info")
         else:
             self.update_counter = 12
+            print("Update counter initialized")
 
     def rotate_suzanne(self, *a):
         self.object.scene.objects['Suzanne.001'].applyRotation((0, 0, 3.1516 * .25))
@@ -414,5 +474,5 @@ class UI(bge.types.KX_PythonComponent):
             obj_info = self.get_object_info(obj)
             objects_info.append(obj_info)
 
-        print(objects_info)
+#        print(objects_info)
         return objects_info
